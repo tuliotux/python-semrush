@@ -18,7 +18,7 @@ From github;
 
 .. code-block:: bash
 
-    $ pip install git+https://github.com/storerjeremy/python-semrush.git
+    $ pip install git+https://github.com/tuliotux/python-semrush.git
 
 Usage
 =====
