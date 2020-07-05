@@ -582,6 +582,27 @@ class SemrushClient(object):
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
         return self.produce('phrase_these', phrase=phrase, database=database, **kwargs)
+    
+    def phrase_questions(self, phrase, database, **kwargs):
+        """
+        Phrase Questions
+        The report provides a list of phrase questions relevant to a queried term in a chosen database.
+
+        :param phrase: The phrase or term to obtain data for
+        :param database: The database to query, one of the choices from REGIONAL_DATABASES
+
+        Optional kwargs
+        - export_escape: 1
+        - export_decode: 1 or 0
+        - export_columns: Ph, Nq, Cp, Co, Nr
+        - display_limit: default value is 10.000
+        - display_offset: This parameter allows you to skip a specified number of results before sending a report
+        - display_sort: nq_asc, nq_desc, cp_asc, cp_desc, co_asc, co_desc, nr_asc, nr_desc
+        - display_filter: Ph, Nq, Cp, Co, Nr
+        """
+        if database not in REGIONAL_DATABASES.values():
+            raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
+        return self.produce('phrase_questions', phrase=phrase, database=database, **kwargs)
 
     # URL Reports
     def url_organic(self, url, database, **kwargs):
