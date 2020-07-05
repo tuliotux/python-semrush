@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "python-semrush"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "Python-Semrush is a wrapper around the SEMrush API version 3.0"
 authors = ["Tulio Cesar Martins Pereira <funroll.loops@gmail.com>"]
 
 [tool.poetry.dependencies]
