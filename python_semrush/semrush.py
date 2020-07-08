@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
-import requests
+import requests_async as requests
 from python_semrush.errors import *
 
 SEMRUSH_API_URL = 'http://api.semrush.com/'
@@ -163,15 +163,15 @@ class SemrushClient(object):
             raise SemRushRegionalDatabaseError('%s - is not an accepted search engine.' % search_engine)
 
     # Report producing methods
-    def produce(self, report_type, **kwargs):
-        data = self.retrieve(report_type, **kwargs)
+    async def produce(self, report_type, **kwargs):
+        data = await self.retrieve(report_type, **kwargs)
         return self.parse_response(data)
 
-    def retrieve(self, report_type, **kwargs):
+    async def retrieve(self, report_type, **kwargs):
         kwargs['type'] = report_type
         kwargs['key'] = self.key
 
-        response = requests.get(self.api_url, params=kwargs)
+        response = await requests.get(self.api_url, params=kwargs)
 
         if response.status_code == 200:
             return response.content
@@ -195,7 +195,7 @@ class SemrushClient(object):
         return results
 
     # Overview Reports
-    def domain_ranks(self, domain, **kwargs):
+    async def domain_ranks(self, domain, **kwargs):
         """
         Domain Overview (All Databases)
         This report provides live or historical data on a domain’s keyword rankings in both organic and paid search in
@@ -207,9 +207,9 @@ class SemrushClient(object):
         - display_date: date in format "YYYYMM15"
         - export_columns: Db, Dn, Rk, Or, Ot, Oc, Ad, At, Ac
         """
-        return self.produce('domain_ranks', domain=domain, **kwargs)
+        return await self.produce('domain_ranks', domain=domain, **kwargs)
 
-    def domain_rank(self, domain, database, **kwargs):
+    async def domain_rank(self, domain, database, **kwargs):
         """
         Domain Overview (One Database)
         This report provides live or historical data on a domain’s keyword rankings in both organic and paid search in a
@@ -226,9 +226,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_rank', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_rank', domain=domain, database=database, **kwargs)
 
-    def domain_rank_history(self, domain, database, **kwargs):
+    async def domain_rank_history(self, domain, database, **kwargs):
         """
         Domain Overview (History)
         This report provides live and historical data on a domain’s keyword rankings in both organic and paid search in
@@ -248,9 +248,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_rank_history', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_rank_history', domain=domain, database=database, **kwargs)
 
-    def rank_difference(self, database, **kwargs):
+    async def rank_difference(self, database, **kwargs):
         """
         Winners and Losers
         This report shows changes in the number of keywords, traffic, and budget estimates of the most popular websites
@@ -270,9 +270,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('rank_difference', database=database, **kwargs)
+        return await self.produce('rank_difference', database=database, **kwargs)
 
-    def rank(self, database, **kwargs):
+    async def rank(self, database, **kwargs):
         """
         Semrush Rank
         This report lists the most popular domains ranked by traffic originating from Google's top 20 organic search
@@ -290,10 +290,10 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('rank', database=database, **kwargs)
+        return await self.produce('rank', database=database, **kwargs)
 
     # Domain Reports
-    def domain_organic(self, domain, database, **kwargs):
+    async def domain_organic(self, domain, database, **kwargs):
         """
         Domain Organic Search Keywords
         This report lists keywords that bring users to a domain via Google's top 20 organic search results.
@@ -314,9 +314,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_organic', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_organic', domain=domain, database=database, **kwargs)
 
-    def domain_adwords(self, domain, database, **kwargs):
+    async def domain_adwords(self, domain, database, **kwargs):
         """
         Domain Paid Search
         This report lists keywords that bring users to a domain via Google's paid search results.
@@ -337,9 +337,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_adwords', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_adwords', domain=domain, database=database, **kwargs)
 
-    def domain_adwords_unique(self, domain, database, **kwargs):
+    async def domain_adwords_unique(self, domain, database, **kwargs):
         """
         Ads Copies
         This report shows unique ad copies SEMrush noticed when the domain ranked in Google's paid search results for
@@ -358,9 +358,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_adwords_unique', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_adwords_unique', domain=domain, database=database, **kwargs)
 
-    def domain_organic_organic(self, domain, database, **kwargs):
+    async def domain_organic_organic(self, domain, database, **kwargs):
         """
         Competitors In Organic Search
         This report lists a domain’s competitors in organic search results.
@@ -379,9 +379,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_organic_organic', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_organic_organic', domain=domain, database=database, **kwargs)
 
-    def domain_adwords_adwords(self, domain, database, **kwargs):
+    async def domain_adwords_adwords(self, domain, database, **kwargs):
         """
         Competitors In Paid Search
         This report lists a domain’s competitors in paid search results.
@@ -400,9 +400,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_adwords_adwords', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_adwords_adwords', domain=domain, database=database, **kwargs)
 
-    def domain_adwords_historical(self, domain, database, **kwargs):
+    async def domain_adwords_historical(self, domain, database, **kwargs):
         """
         Domains Ads History
         This report shows keywords a domain has bid on in the last 12 months and its positions in paid search results.
@@ -421,9 +421,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_adwords_historical', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_adwords_historical', domain=domain, database=database, **kwargs)
 
-    def domain_domains(self, domains, database, **kwargs):
+    async def domain_domains(self, domains, database, **kwargs):
         """
         Domain Vs. Domain
         This report allows users to compare up to five domains by common keywords, unique keywords, all keywords, or
@@ -447,9 +447,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_domains', domains=domains, database=database, **kwargs)
+        return await self.produce('domain_domains', domains=domains, database=database, **kwargs)
 
-    def domain_shopping(self, domain, database, **kwargs):
+    async def domain_shopping(self, domain, database, **kwargs):
         """
         Domain PLA Search Keywords
         This report lists keywords that trigger a domain’s product listing ads to appear in Google's paid search
@@ -469,9 +469,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_shopping', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_shopping', domain=domain, database=database, **kwargs)
 
-    def domain_shopping_unique(self, domain, database, **kwargs):
+    async def domain_shopping_unique(self, domain, database, **kwargs):
         """
         PLA Copies
         This report shows product listing ad copies SEMrush noticed when the domain ranked in Google's paid search results
@@ -490,9 +490,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_shopping_unique', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_shopping_unique', domain=domain, database=database, **kwargs)
 
-    def domain_shopping_shopping(self, domain, database, **kwargs):
+    async def domain_shopping_shopping(self, domain, database, **kwargs):
         """
         PLA Competitors
         This report lists domains a queried domain is competing against in Google's paid search results with product
@@ -512,10 +512,10 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('domain_shopping_shopping', domain=domain, database=database, **kwargs)
+        return await self.produce('domain_shopping_shopping', domain=domain, database=database, **kwargs)
 
     # Keyword Reports
-    def phrase_all(self, phrase, **kwargs):
+    async def phrase_all(self, phrase, **kwargs):
         """
         Keyword Overview (All Databases)
         This report provides a summary of a keyword, including its volume, CPC, competition, and the number of results
@@ -529,9 +529,9 @@ class SemrushClient(object):
         - export_decode: 1 or 0
         - export_columns: Db, Ph, Nq, Cp, Co
         """
-        return self.produce('phrase_all', phrase=phrase, **kwargs)
+        return await self.produce('phrase_all', phrase=phrase, **kwargs)
 
-    def phrase_this(self, phrase, database, **kwargs):
+    async def phrase_this(self, phrase, database, **kwargs):
         """
         Keyword Overview (One Database)
         This report provides a summary of a keyword, including its volume, CPC, competition, and the number of results
@@ -548,9 +548,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_this', phrase=phrase, database=database, **kwargs)
+        return await self.produce('phrase_this', phrase=phrase, database=database, **kwargs)
 
-    def phrase_organic(self, phrase, database, **kwargs):
+    async def phrase_organic(self, phrase, database, **kwargs):
         """
         Organic Results
         This report lists domains that are ranking in Google's top 20 organic search results with a requested keyword.
@@ -567,9 +567,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_organic', phrase=phrase, database=database, **kwargs)
+        return await self.produce('phrase_organic', phrase=phrase, database=database, **kwargs)
 
-    def phrase_adwords(self, phrase, database, **kwargs):
+    async def phrase_adwords(self, phrase, database, **kwargs):
         """
         Paid Results
         This report lists domains that are ranking in Google's paid search results with a requested keyword.
@@ -586,9 +586,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_adwords', phrase=phrase, database=database, **kwargs)
+        return await self.produce('phrase_adwords', phrase=phrase, database=database, **kwargs)
 
-    def phrase_related(self, phrase, database, **kwargs):
+    async def phrase_related(self, phrase, database, **kwargs):
         """
         Related Keywords
         This report provides an extended list of related keywords, synonyms, and variations relevant to a queried term
@@ -609,9 +609,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_related', phrase=phrase, database=database, **kwargs)
+        return await self.produce('phrase_related', phrase=phrase, database=database, **kwargs)
 
-    def phrase_adwords_historical(self, phrase, database, **kwargs):
+    async def phrase_adwords_historical(self, phrase, database, **kwargs):
         """
         Keywords Ads History
         This report shows domains that have bid on a requested keyword in the last 12 months and their positions in paid
@@ -629,9 +629,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_adwords_historical', database=database, **kwargs)
+        return await self.produce('phrase_adwords_historical', database=database, **kwargs)
 
-    def phrase_fullsearch(self, phrase, database, **kwargs):
+    async def phrase_fullsearch(self, phrase, database, **kwargs):
         """
         Phrase Match Keywords
         The report offers a list of phrase matches and alternate search queries, including particular keywords or
@@ -651,9 +651,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_fullsearch', phrase=phrase, database=database, **kwargs)
+        return await self.produce('phrase_fullsearch', phrase=phrase, database=database, **kwargs)
 
-    def phrase_kdi(self, phrase, database, **kwargs):
+    async def phrase_kdi(self, phrase, database, **kwargs):
         """
         Keyword Difficulty
         This report provides keyword difficulty, an index that helps to estimate how difficult it would be to seize
@@ -668,9 +668,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_kdi', phrase=phrase, database=database, **kwargs)
+        return await self.produce('phrase_kdi', phrase=phrase, database=database, **kwargs)
 
-    def phrase_these(self, phrase, database, **kwargs):
+    async def phrase_these(self, phrase, database, **kwargs):
         """
         Batch Keyword
         This report provides a summary of up to 100 keywords, including its volume, CPC, competition,
@@ -687,9 +687,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_these', phrase=phrase, database=database, **kwargs)
+        return await self.produce('phrase_these', phrase=phrase, database=database, **kwargs)
     
-    def phrase_questions(self, phrase, database, **kwargs):
+    async def phrase_questions(self, phrase, database, **kwargs):
         """
         Phrase Questions
         The report provides a list of phrase questions relevant to a queried term in a chosen database.
@@ -708,10 +708,10 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('phrase_questions', phrase=phrase, database=database, **kwargs)
+        return await self.produce('phrase_questions', phrase=phrase, database=database, **kwargs)
 
     # URL Reports
-    def url_organic(self, url, database, **kwargs):
+    async def url_organic(self, url, database, **kwargs):
         """
         URL Organic Search Keywords
         This report lists keywords that bring users to a URL via Google's top 20 organic search results.
@@ -729,9 +729,9 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('url_organic', url=url, database=database, **kwargs)
+        return await self.produce('url_organic', url=url, database=database, **kwargs)
 
-    def url_adwords(self, url, database, **kwargs):
+    async def url_adwords(self, url, database, **kwargs):
         """
         URL Paid Search Keywords
         This report lists keywords that bring users to a URL via Google's paid search results.
@@ -749,10 +749,10 @@ class SemrushClient(object):
         """
         if database not in REGIONAL_DATABASES.values():
             raise SemRushRegionalDatabaseError('%s - is not an accepted database.' % database)
-        return self.produce('url_adwords', url=url, database=database, **kwargs)
+        return await self.produce('url_adwords', url=url, database=database, **kwargs)
 
     # Display Advertising Reports
-    def publisher_text_ads(self, domain, **kwargs):
+    async def publisher_text_ads(self, domain, **kwargs):
         """
         Publisher Display Ads
         This report lists display ads that have appeared on a publisher’s website.
@@ -773,9 +773,9 @@ class SemrushClient(object):
         kwargs['action'] = 'report'
         kwargs['export'] = 'api'
         self.api_url = SEMRUSH_ASNS_API_URL
-        return self.produce('publisher_text_ads', domain=domain, **kwargs)
+        return await self.produce('publisher_text_ads', domain=domain, **kwargs)
 
-    def publisher_advertisers(self, domain, **kwargs):
+    async def publisher_advertisers(self, domain, **kwargs):
         """
         Advertisers
         This report lists advertisers whose display ads have appeared on a queried publisher’s website.
@@ -796,9 +796,9 @@ class SemrushClient(object):
         kwargs['action'] = 'report'
         kwargs['export'] = 'api'
         self.api_url = SEMRUSH_ASNS_API_URL
-        return self.produce('publisher_advertisers', domain=domain, **kwargs)
+        return await self.produce('publisher_advertisers', domain=domain, **kwargs)
 
-    def advertiser_publishers(self, domain, **kwargs):
+    async def advertiser_publishers(self, domain, **kwargs):
         """
         Publishers
         This report lists publisher’s websites where an advertiser’s display ads have appeared.
@@ -819,9 +819,9 @@ class SemrushClient(object):
         kwargs['action'] = 'report'
         kwargs['export'] = 'api'
         self.api_url = SEMRUSH_ASNS_API_URL
-        return self.produce('advertiser_publishers', domain=domain, **kwargs)
+        return await self.produce('advertiser_publishers', domain=domain, **kwargs)
 
-    def advertiser_text_ads(self, domain, **kwargs):
+    async def advertiser_text_ads(self, domain, **kwargs):
         """
         Advertiser Display Ads
         This report lists display ads of a queried advertiser’s website.
@@ -842,9 +842,9 @@ class SemrushClient(object):
         kwargs['action'] = 'report'
         kwargs['export'] = 'api'
         self.api_url = SEMRUSH_ASNS_API_URL
-        return self.produce('advertiser_text_ads', domain=domain, **kwargs)
+        return await self.produce('advertiser_text_ads', domain=domain, **kwargs)
 
-    def advertiser_landings(self, domain, **kwargs):
+    async def advertiser_landings(self, domain, **kwargs):
         """
         Landing Pages
         This report lists URLs of a domain’s landing pages promoted via display ads.
@@ -865,9 +865,9 @@ class SemrushClient(object):
         kwargs['action'] = 'report'
         kwargs['export'] = 'api'
         self.api_url = SEMRUSH_ASNS_API_URL
-        return self.produce('advertiser_landings', domain=domain, **kwargs)
+        return await self.produce('advertiser_landings', domain=domain, **kwargs)
 
-    def advertiser_publisher_text_ads(self, domain, **kwargs):
+    async def advertiser_publisher_text_ads(self, domain, **kwargs):
         """
         Advertiser Display Ads On A Publishers Website
         This report lists the display ads of a given advertiser that have appeared on a particular publisher’s website.
@@ -888,9 +888,9 @@ class SemrushClient(object):
         kwargs['action'] = 'report'
         kwargs['export'] = 'api'
         self.api_url = SEMRUSH_ASNS_API_URL
-        return self.produce('advertiser_publisher_text_ads', domain=domain, **kwargs)
+        return await self.produce('advertiser_publisher_text_ads', domain=domain, **kwargs)
 
-    def advertiser_rank(self, domain, **kwargs):
+    async def advertiser_rank(self, domain, **kwargs):
         """
         Advertisers Rank
         This report lists advertisers ranked by the total number of display ads noticed by SEMrush.
@@ -906,9 +906,9 @@ class SemrushClient(object):
         kwargs['action'] = 'report'
         kwargs['export'] = 'api'
         self.api_url = SEMRUSH_ASNS_API_URL
-        return self.produce('advertiser_rank', domain=domain, **kwargs)
+        return await self.produce('advertiser_rank', domain=domain, **kwargs)
 
-    def publisher_rank(self, domain, **kwargs):
+    async def publisher_rank(self, domain, **kwargs):
         """
         Publishers Rank
         This report lists publishers ranked by the total number of display ads noticed by SEMrush.
@@ -924,10 +924,10 @@ class SemrushClient(object):
         kwargs['action'] = 'report'
         kwargs['export'] = 'api'
         self.api_url = SEMRUSH_ASNS_API_URL
-        return self.produce('publisher_rank', domain=domain, **kwargs)
+        return await self.produce('publisher_rank', domain=domain, **kwargs)
 
     # Backlinks
-    def backlinks_overview(self, target, target_type='root_domain'):
+    async def backlinks_overview(self, target, target_type='root_domain'):
         """
         Backlinks Overview
         This report provides a summary of backlinks, including their type, referring domains and IP addresses for a
@@ -940,9 +940,9 @@ class SemrushClient(object):
         - target_type: domain, root_domain or url
         """
         self.api_url = SEMRUSH_API_V1_URL
-        return self.produce('backlinks_overview', target=target, target_type=target_type)
+        return await self.produce('backlinks_overview', target=target, target_type=target_type)
 
-    def backlinks(self, target, target_type='root_domain', **kwargs):
+    async def backlinks(self, target, target_type='root_domain', **kwargs):
         """
         Backlinks
         This report lists backlinks for a domain, root domain, or URL.
@@ -960,9 +960,9 @@ class SemrushClient(object):
         - display_filter:
         """
         self.api_url = SEMRUSH_API_V1_URL
-        return self.produce('backlinks', target=target, target_type=target_type, **kwargs)
+        return await self.produce('backlinks', target=target, target_type=target_type, **kwargs)
 
-    def backlinks_refdomains(self, target, target_type='root_domain', **kwargs):
+    async def backlinks_refdomains(self, target, target_type='root_domain', **kwargs):
         """
         Referring Domains
         This report lists domains pointing to the queried domain, root domain, or URL.
@@ -979,9 +979,9 @@ class SemrushClient(object):
         - display_filter:
         """
         self.api_url = SEMRUSH_API_V1_URL
-        return self.produce('backlinks_refdomains', target=target, target_type=target_type, **kwargs)
+        return await self.produce('backlinks_refdomains', target=target, target_type=target_type, **kwargs)
 
-    def backlinks_refips(self, target, target_type='root_domain', **kwargs):
+    async def backlinks_refips(self, target, target_type='root_domain', **kwargs):
         """
         Referring IPs
         This report lists IP addresses where backlinks to a domain, root domain, or URL are coming from.
@@ -997,9 +997,9 @@ class SemrushClient(object):
             first_seen_desc, domains_num_asc domains_num_desc
         """
         self.api_url = SEMRUSH_API_V1_URL
-        return self.produce('backlinks_refips', target=target, target_type=target_type, **kwargs)
+        return await self.produce('backlinks_refips', target=target, target_type=target_type, **kwargs)
 
-    def backlinks_tld(self, target, target_type='root_domain', **kwargs):
+    async def backlinks_tld(self, target, target_type='root_domain', **kwargs):
         """
         TLD Distribution
         This report shows referring domain distributions depending on their top-level domain type.
@@ -1012,9 +1012,9 @@ class SemrushClient(object):
         - display_sort: backlinks_num_asc, backlinks_num_desc, domains_num_asc domains_num_desc
         """
         self.api_url = SEMRUSH_API_V1_URL
-        return self.produce('backlinks_tld', target=target, target_type=target_type, **kwargs)
+        return await self.produce('backlinks_tld', target=target, target_type=target_type, **kwargs)
 
-    def backlinks_geo(self, target, target_type='root_domain', **kwargs):
+    async def backlinks_geo(self, target, target_type='root_domain', **kwargs):
         """
         Referring Domains By Country
         This report shows referring domain distributions by country (an IP address defines a country).
@@ -1027,9 +1027,9 @@ class SemrushClient(object):
         - display_sort: backlinks_num_asc, backlinks_num_desc, domains_num_asc domains_num_desc
         """
         self.api_url = SEMRUSH_API_V1_URL
-        return self.produce('backlinks_geo', target=target, target_type=target_type, **kwargs)
+        return await self.produce('backlinks_geo', target=target, target_type=target_type, **kwargs)
 
-    def backlinks_anchors(self, target, target_type='root_domain', **kwargs):
+    async def backlinks_anchors(self, target, target_type='root_domain', **kwargs):
         """
         Anchors
         This report lists anchor texts used in backlinks leading to the queried domain, root domain, or URL. It also
@@ -1044,9 +1044,9 @@ class SemrushClient(object):
             first_seen_desc, domains_num_asc domains_num_desc
         """
         self.api_url = SEMRUSH_API_V1_URL
-        return self.produce('backlinks_anchors', target=target, target_type=target_type, **kwargs)
+        return await self.produce('backlinks_anchors', target=target, target_type=target_type, **kwargs)
 
-    def backlinks_pages(self, target, target_type='root_domain', **kwargs):
+    async def backlinks_pages(self, target, target_type='root_domain', **kwargs):
         """
         Indexed Pages
         This report shows indexed pages of the queried domain
@@ -1061,4 +1061,4 @@ class SemrushClient(object):
             last_seen_desc
         """
         self.api_url = SEMRUSH_API_V1_URL
-        return self.produce('backlinks_pages', target=target, target_type=target_type, **kwargs)
+        return await self.produce('backlinks_pages', target=target, target_type=target_type, **kwargs)

@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "python-semrush"
-version = "0.1.4"
+version = "0.1.5"
 description = "Python-Semrush is a wrapper around the SEMrush API version 3.0"
 authors = ["Tulio Cesar Martins Pereira <funroll.loops@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-requests = "^2.24.0"
-ipdb = "^0.13.3"
+requests-async = "^0.6.2"
 
 [tool.poetry.dev-dependencies]
+ipdb = "^0.13.3"
 
 [build-system]
 requires = ["poetry>=0.12"]
